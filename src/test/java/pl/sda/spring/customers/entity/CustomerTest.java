@@ -16,9 +16,9 @@ class CustomerTest {
 
     @Test
     @Transactional
-    void testCreateCustomer() {
+    void testCreatePerson() {
         // given:
-        final var customer = new Customer("Jan", "Nowak", "02939499393");
+        final var customer = new Person("Jan", "Nowak", "02939499393");
         final var address = new Address("Testowa", "Test", "02-304", "PL");
         customer.addAddress(address);
 
@@ -31,5 +31,16 @@ class CustomerTest {
         final var readCustomer = em.find(Customer.class, customer.getId());
         assertEquals(readCustomer, customer);
         assertEquals(address, readCustomer.getAddresses().get(0));
+    }
+
+    @Test
+    @Transactional
+    void testCreateCompany() {
+        // given:
+
+        // when:
+
+        // then:
+
     }
 }

@@ -1,61 +1,39 @@
 package pl.sda.spring.customers.entity;
 
-import static pl.sda.spring.customers.util.Precondition.requireNonNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.CascadeType;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import pl.sda.spring.customers.util.OnlyForJpa;
 
 @Entity
 @Table(name = "customers")
-public final class Customer {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "customer_type")
+public abstract class Customer {
 
     @Id
     private UUID id;
 
-    private String firstName;
-
-    private String lastName;
-
-    private String pesel;
-
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "customer_id")
     private List<Address> addresses;
 
-    @OnlyForJpa
-    private Customer() {}
-
-    public Customer(String firstName, String lastName, String pesel) {
-        requireNonNull(firstName, lastName, pesel);
+    public Customer() {
         this.id = UUID.randomUUID();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.pesel = pesel;
         this.addresses = new ArrayList<>();
     }
 
     public UUID getId() {
         return id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getPesel() {
-        return pesel;
     }
 
     public boolean addAddress(Address address) {
@@ -83,24 +61,11 @@ public final class Customer {
             return false;
         }
         Customer customer = (Customer) o;
-        return id.equals(customer.id) &&
-            firstName.equals(customer.firstName) &&
-            lastName.equals(customer.lastName) &&
-            pesel.equals(customer.pesel);
+        return id.equals(customer.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, pesel);
-    }
-
-    @Override
-    public String toString() {
-        return "Customer{" +
-            "id=" + id +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", pesel='" + pesel + '\'' +
-            '}';
+        return Objects.hash(id);
     }
 }
