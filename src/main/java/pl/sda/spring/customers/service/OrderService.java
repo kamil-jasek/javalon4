@@ -1,13 +1,16 @@
 package pl.sda.spring.customers.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class OrderService {
 
     private final CustomerService customerService;
+
+    // @Autowired - optional
+    public OrderService(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     public void createOrder(String productName, double price, String customerName) {
         customerService.createCustomer(customerName);
