@@ -1,5 +1,6 @@
 package pl.sda.spring.customers.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Assertions;
@@ -17,5 +18,7 @@ class OrderServiceTest {
     void testCreateOrder() {
         Assertions.assertNotNull(orderService);
         orderService.createOrder("test", 12, "test");
+
+        assertEquals(5, orderService.getMaxCustomers());
     }
 }

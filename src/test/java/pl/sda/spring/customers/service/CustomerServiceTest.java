@@ -20,6 +20,7 @@ class CustomerServiceTest {
     @Test
     void testCreateCustomer() {
         assertNotNull(customerService);
+        assertEquals("Stefan", customerService.getDefaultCustomerName());
     }
 
     @Test
