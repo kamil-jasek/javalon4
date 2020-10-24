@@ -5,12 +5,10 @@ import static pl.sda.spring.customers.util.Precondition.requireNonNull;
 import java.util.Objects;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.MappedSuperclass;
 import pl.sda.spring.customers.util.OnlyForJpa;
 
 @Entity
 @DiscriminatorValue("PERSON")
-@MappedSuperclass
 public final class Person extends Customer {
 
     private String firstName;
