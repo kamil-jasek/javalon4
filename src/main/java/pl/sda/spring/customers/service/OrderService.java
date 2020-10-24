@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OrderService {
+public final class OrderService {
 
     private final CustomerService customerService;
     private final int maxCustomers;

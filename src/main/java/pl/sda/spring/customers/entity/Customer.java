@@ -2,11 +2,17 @@ package pl.sda.spring.customers.entity;
 
 import static pl.sda.spring.customers.util.Precondition.requireNonNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import pl.sda.spring.customers.util.OnlyForJpa;
 
 @Entity
 @Table(name = "customers")
@@ -21,7 +27,10 @@ public final class Customer {
 
     private String pesel;
 
-    // only for JPA
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Address> addresses;
+
+    @OnlyForJpa
     private Customer() {}
 
     public Customer(String firstName, String lastName, String pesel) {
@@ -30,6 +39,7 @@ public final class Customer {
         this.firstName = firstName;
         this.lastName = lastName;
         this.pesel = pesel;
+        this.addresses = new ArrayList<>();
     }
 
     public UUID getId() {
@@ -46,6 +56,22 @@ public final class Customer {
 
     public String getPesel() {
         return pesel;
+    }
+
+    public boolean addAddress(Address address) {
+        if (!addresses.contains(address)) {
+            addresses.add(address);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeAddress(Address address) {
+        return addresses.remove(address);
+    }
+
+    public List<Address> getAddresses() {
+        return new ArrayList<>(addresses);
     }
 
     @Override

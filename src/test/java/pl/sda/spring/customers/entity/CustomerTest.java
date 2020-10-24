@@ -3,8 +3,6 @@ package pl.sda.spring.customers.entity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.persistence.EntityManager;
-import org.hibernate.Session;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +19,8 @@ class CustomerTest {
     void testCreateCustomer() {
         // given:
         final var customer = new Customer("Jan", "Nowak", "02939499393");
+        final var address = new Address("Testowa", "Test", "02-304", "PL");
+        customer.addAddress(address);
 
         // when:
         em.persist(customer);
@@ -30,5 +30,6 @@ class CustomerTest {
         // then:
         final var readCustomer = em.find(Customer.class, customer.getId());
         assertEquals(readCustomer, customer);
+        assertEquals(address, readCustomer.getAddresses().get(0));
     }
 }

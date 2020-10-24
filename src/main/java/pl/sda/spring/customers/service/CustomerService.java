@@ -3,7 +3,7 @@ package pl.sda.spring.customers.service;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomerService {
+public final class CustomerService {
 
     private final String defaultCustomerName;
 
