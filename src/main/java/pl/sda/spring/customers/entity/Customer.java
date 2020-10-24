@@ -21,6 +21,9 @@ public final class Customer {
 
     private String pesel;
 
+    // only for JPA
+    private Customer() {}
+
     public Customer(String firstName, String lastName, String pesel) {
         requireNonNull(firstName, lastName, pesel);
         this.id = UUID.randomUUID();
