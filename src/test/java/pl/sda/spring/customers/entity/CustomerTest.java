@@ -82,7 +82,8 @@ class CustomerTest {
 
         // then
         assertTrue(customers.stream()
-            .allMatch(c -> c.getAddresses().get(0).getCity().equals("Warsaw")));
+            .allMatch(c -> c.getAddresses().stream()
+                .anyMatch(address -> address.getCity().equals("Warsaw"))));
     }
 
     private void saveAndClear(Customer customer) {
