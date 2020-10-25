@@ -33,6 +33,11 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID> {
         int getCount();
     }
 
+    @Query(value = "select count(a.street) as count, a.zip_code as zipCode, a.country as country "
+        + "from addresses a group by a.zip_code, a.country order by count(a.street) desc",
+        nativeQuery = true)
+    List<StreetByZipCodeCountry> countStreetByZipCodeCountry();
+
     interface StreetByZipCodeCountry {
         int getCount();
         String getZipCode();

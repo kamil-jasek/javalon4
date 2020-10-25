@@ -198,10 +198,14 @@ class CustomerTest {
     @Transactional
     void testCountStreetsByZipCodeAndCountry() {
         // given - create customers and addresses
-
+        final var customer1 = new Company("TEST S.A.", "PL9393939");
+        customer1.addAddress(new Address("street", "Cracow", "03-230", "UK"));
+        customer1.addAddress(new Address("street", "Manchester", "03-230", "UK"));
+        customer1.addAddress(new Address("street", "Manchester", "01-030", "PL"));
+        saveAndClear(customer1);
 
         // when
-        final var results = new ArrayList<StreetByZipCodeCountry>();
+        final var results = repository.countStreetByZipCodeCountry();
 
         // then
         assertFalse(results.isEmpty());
