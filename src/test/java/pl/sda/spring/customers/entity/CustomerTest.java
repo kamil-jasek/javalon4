@@ -70,6 +70,7 @@ class CustomerTest {
     void testFindCustomersByCity() {
         // given
         final var customer1 = new Company("TEST S.A.", "PL9393939");
+        customer1.addAddress(new Address("street", "Cracow", "01-600", "PL"));
         customer1.addAddress(new Address("street", "Warsaw", "01-230", "PL"));
         saveAndClear(customer1);
 
