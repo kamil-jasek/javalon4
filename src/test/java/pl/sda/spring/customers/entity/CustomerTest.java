@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +111,23 @@ class CustomerTest {
         assertTrue(customers.stream()
             .allMatch(person -> person.getLastName().equals("Jacek") && person.getAddresses().stream()
                 .anyMatch(address -> address.getCountry().equals("UK"))));
+    }
+
+    @Test
+    @Transactional
+    void testFindAllCustomersFromZipCodeAndCountry() {
+        // given - create two customers, add addresses
+        final var zipCode = "01-300";
+        final var country = "PL";
+
+        // when
+        final List<Customer> customers = new ArrayList<>(); // replace with repository
+
+        // then
+        assertFalse(customers.isEmpty());
+        assertTrue(customers.stream()
+            .allMatch(customer -> customer.getAddresses().stream()
+                .anyMatch(address -> address.getZipCode().equals(zipCode) && address.getCountry().equals(country))));
     }
 
     private void saveAndClear(Customer... args) {
