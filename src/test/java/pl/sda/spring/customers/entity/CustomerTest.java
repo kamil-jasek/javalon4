@@ -1,9 +1,11 @@
 package pl.sda.spring.customers.entity;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -135,6 +137,60 @@ class CustomerTest {
         assertTrue(customers.stream()
             .allMatch(customer -> customer.getAddresses().stream()
                 .anyMatch(address -> address.getZipCode().equals(zipCode) && address.getCountry().equals(country))));
+    }
+
+    @Test
+    @Transactional
+    void testCountCustomersByCity() {
+        // given
+        final var customer1 = new Company("TEST S.A.", "PL9393939");
+        customer1.addAddress(new Address("street", "Cracow", "01-600", "PL"));
+        customer1.addAddress(new Address("street", "Manchester", "01-230", "UK"));
+
+        final var customer2 = new Company("TEST 2", "PL39933020");
+        customer2.addAddress(new Address("str", "London", "03-122", "UK"));
+
+        final var customer3 = new Company("TEST 3", "PL39933021");
+        customer2.addAddress(new Address("str", "London", "03-122", "UK"));
+
+        saveAndClear(customer1, customer2, customer3);
+
+        // when
+        final var results = repository.countCustomersByCity("UK");
+
+        // then
+        assertFalse(results.isEmpty());
+        assertArrayEquals(new Object[] { "London", BigInteger.valueOf(2) }, results.get(0));
+        assertArrayEquals(new Object[] { "Manchester", BigInteger.valueOf(1) }, results.get(1));
+    }
+
+    @Test
+    @Transactional
+    void testCountByCity() {
+        // given
+        final var customer1 = new Company("TEST S.A.", "PL9393939");
+        customer1.addAddress(new Address("street", "Cracow", "01-600", "PL"));
+        customer1.addAddress(new Address("street", "Manchester", "01-230", "UK"));
+
+        final var customer2 = new Company("TEST 2", "PL39933020");
+        customer2.addAddress(new Address("str", "London", "03-122", "UK"));
+
+        final var customer3 = new Company("TEST 3", "PL39933021");
+        customer2.addAddress(new Address("str", "London", "03-122", "UK"));
+
+        saveAndClear(customer1, customer2, customer3);
+
+        // when
+        final var results = repository.countByCity("UK");
+
+        // then
+        assertFalse(results.isEmpty());
+        final var row1 = results.get(0);
+        assertEquals("London", row1.getCity());
+        assertEquals(2, row1.getCount());
+        final var row2 = results.get(1);
+        assertEquals("Manchester", row2.getCity());
+        assertEquals(1, row2.getCount());
     }
 
     private void saveAndClear(Customer... args) {
