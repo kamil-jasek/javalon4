@@ -119,9 +119,15 @@ class CustomerTest {
         // given - create two customers, add addresses
         final var zipCode = "01-300";
         final var country = "PL";
+        final var company = new Company("TEST", "PL939399393");
+        company.addAddress(new Address("str1", "cit1", zipCode, country));
+        final var person = new Person("Jan", "Nowak", "PL93999333");
+        person.addAddress(new Address("str2", "cit2", "01-240", "UK"));
+
+        saveAndClear(company, person);
 
         // when
-        final List<Customer> customers = new ArrayList<>(); // replace with repository
+        final List<Customer> customers = repository.findByAllCustomersFromZipCodeAndCountry(zipCode, country);
 
         // then
         assertFalse(customers.isEmpty());
