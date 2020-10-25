@@ -3,6 +3,7 @@ package pl.sda.spring.customers.entity;
 import static pl.sda.spring.customers.util.Precondition.requireNonNull;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import pl.sda.spring.customers.util.OnlyForJpa;
@@ -12,6 +13,8 @@ import pl.sda.spring.customers.util.OnlyForJpa;
 public final class Company extends Customer {
 
     private String name;
+
+    @Column(unique = true)
     private String vatNumber;
 
     @OnlyForJpa

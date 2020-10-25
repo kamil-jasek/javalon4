@@ -50,6 +50,20 @@ class CustomerTest {
         assertEquals(readCompany, company);
     }
 
+    @Test
+    @Transactional
+    void testFindCompanyByVat() {
+        // given:
+        saveAndClear(new Company("TEST1", "PL0303003"));
+        saveAndClear(new Company("TEST2", "PL9292992"));
+
+        // when:
+        final var customer = repository.findByVatNumber("PL9292992");
+
+        // then:
+        assertEquals("PL9292992", customer.getVatNumber());
+    }
+
     private void saveAndClear(Customer customer) {
         repository.saveAndFlush(customer);
         em.clear();
