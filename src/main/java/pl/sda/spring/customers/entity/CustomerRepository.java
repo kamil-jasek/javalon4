@@ -11,6 +11,6 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID> {
 
     List<Customer> findByAddressesCity(String city);
 
-    @Query("from Person p join p.addresses a where p.lastName = :lastname and a.country = :country")
+    @Query("from Person p join p.addresses a where lower(p.lastName) = lower(:lastname) and a.country = upper(:country)")
     List<Person> findByLastnameFromCountry(String lastname, String country);
 }

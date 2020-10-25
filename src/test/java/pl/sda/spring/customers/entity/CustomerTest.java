@@ -102,7 +102,7 @@ class CustomerTest {
         saveAndClear(person1, person2);
 
         // when
-        final var customers = repository.findByLastnameFromCountry("Jacek", "UK");
+        final var customers = repository.findByLastnameFromCountry("jacek", "uk");
 
         // then
         assertFalse(customers.isEmpty());
