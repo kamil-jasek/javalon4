@@ -1,6 +1,7 @@
 package pl.sda.spring.customers.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
@@ -62,6 +63,26 @@ class CustomerTest {
 
         // then:
         assertEquals("PL9292992", customer.getVatNumber());
+    }
+
+    @Test
+    @Transactional
+    void testFindCustomersByCity() {
+        // given
+        final var customer1 = new Company("TEST S.A.", "PL9393939");
+        customer1.addAddress(new Address("street", "Warsaw", "01-230", "PL"));
+        saveAndClear(customer1);
+
+        final var customer2 = new Company("TEST 2", "PL39933020");
+        customer2.addAddress(new Address("str", "London", "03-122", "UK"));
+        saveAndClear(customer2);
+
+        // when
+        final var customers = repository.findByAddressesCity("Warsaw");
+
+        // then
+        assertTrue(customers.stream()
+            .allMatch(c -> c.getAddresses().get(0).getCity().equals("Warsaw")));
     }
 
     private void saveAndClear(Customer customer) {
