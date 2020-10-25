@@ -1,6 +1,7 @@
 package pl.sda.spring.customers.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.persistence.EntityManager;
@@ -72,23 +73,48 @@ class CustomerTest {
         final var customer1 = new Company("TEST S.A.", "PL9393939");
         customer1.addAddress(new Address("street", "Cracow", "01-600", "PL"));
         customer1.addAddress(new Address("street", "Warsaw", "01-230", "PL"));
-        saveAndClear(customer1);
 
         final var customer2 = new Company("TEST 2", "PL39933020");
         customer2.addAddress(new Address("str", "London", "03-122", "UK"));
-        saveAndClear(customer2);
+
+        saveAndClear(customer1, customer2);
 
         // when
         final var customers = repository.findByAddressesCity("Warsaw");
 
         // then
+        assertFalse(customers.isEmpty());
         assertTrue(customers.stream()
             .allMatch(c -> c.getAddresses().stream()
                 .anyMatch(address -> address.getCity().equals("Warsaw"))));
     }
 
-    private void saveAndClear(Customer customer) {
-        repository.saveAndFlush(customer);
+    @Test
+    @Transactional
+    void testFindPersonByLastnameFromCountry() {
+        // given
+        final var person1 = new Person("Jan", "Nowak", "0202030030");
+        person1.addAddress(new Address("str1", "Warsaw", "03-230", "PL"));
+        person1.addAddress(new Address("str2", "Cracow", "04-202", "PL"));
+        final var person2 = new Person("Adam", "Jacek", "2883903003");
+        person2.addAddress(new Address("str2", "Londo", "04-222", "UK"));
+
+        saveAndClear(person1, person2);
+
+        // when
+        final var customers = repository.findByLastnameFromCountry("Jacek", "UK");
+
+        // then
+        assertFalse(customers.isEmpty());
+        assertTrue(customers.stream()
+            .allMatch(person -> person.getLastName().equals("Jacek") && person.getAddresses().stream()
+                .anyMatch(address -> address.getCountry().equals("UK"))));
+    }
+
+    private void saveAndClear(Customer... args) {
+        for (Customer customer : args) {
+            repository.saveAndFlush(customer);
+        }
         em.clear();
     }
 }
