@@ -32,4 +32,10 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID> {
         String getCity();
         int getCount();
     }
+
+    interface StreetByZipCodeCountry {
+        int getCount();
+        String getZipCode();
+        String getCountry();
+    }
 }

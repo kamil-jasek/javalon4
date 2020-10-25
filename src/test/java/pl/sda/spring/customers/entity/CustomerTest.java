@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import pl.sda.spring.customers.entity.CustomerRepository.StreetByZipCodeCountry;
 
 @SpringBootTest
 class CustomerTest {
@@ -191,6 +192,28 @@ class CustomerTest {
         final var row2 = results.get(1);
         assertEquals("Manchester", row2.getCity());
         assertEquals(1, row2.getCount());
+    }
+
+    @Test
+    @Transactional
+    void testCountStreetsByZipCodeAndCountry() {
+        // given - create customers and addresses
+
+
+        // when
+        final var results = new ArrayList<StreetByZipCodeCountry>();
+
+        // then
+        assertFalse(results.isEmpty());
+        final var row1 = results.get(0);
+        assertEquals(2, row1.getCount());
+        assertEquals("03-230", row1.getZipCode());
+        assertEquals("UK", row1.getCountry());
+
+        final var row2 = results.get(1);
+        assertEquals(1, row2.getCount());
+        assertEquals("01-030", row2.getZipCode());
+        assertEquals("PL", row2.getCountry());
     }
 
     private void saveAndClear(Customer... args) {
