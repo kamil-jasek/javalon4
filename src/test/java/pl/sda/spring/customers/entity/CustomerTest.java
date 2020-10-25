@@ -65,7 +65,8 @@ class CustomerTest {
         final var customer = repository.findByVatNumber("PL9292992");
 
         // then:
-        assertEquals("PL9292992", customer.getVatNumber());
+        assertTrue(customer.isPresent());
+        assertEquals("PL9292992", customer.get().getVatNumber());
     }
 
     @Test
