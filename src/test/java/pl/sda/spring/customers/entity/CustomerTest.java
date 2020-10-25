@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 class CustomerTest {
 
     @Autowired
+    CustomerRepository repository;
+
+    @Autowired
     EntityManager em;
 
     @Test
@@ -23,24 +26,32 @@ class CustomerTest {
         customer.addAddress(address);
 
         // when:
-        em.persist(customer);
-        em.flush();
-        em.clear();
+        saveAndClear(customer);
 
         // then:
-        final var readCustomer = em.find(Customer.class, customer.getId());
+        final var readCustomer = repository.getOne(customer.getId());
         assertEquals(readCustomer, customer);
         assertEquals(address, readCustomer.getAddresses().get(0));
     }
 
     @Test
     @Transactional
-    void testCreateCompany() {
+    void testUpdateCompany() {
         // given:
+        final var company = new Company("TEST S.A.", "PL3939939");
+        saveAndClear(company);
 
         // when:
+        company.updateName("TESTOWO S.A.");
+        saveAndClear(company);
 
         // then:
+        final var readCompany = repository.getOne(company.getId());
+        assertEquals(readCompany, company);
+    }
 
+    private void saveAndClear(Customer customer) {
+        repository.saveAndFlush(customer);
+        em.clear();
     }
 }

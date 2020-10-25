@@ -31,6 +31,11 @@ public final class Company extends Customer {
         return vatNumber;
     }
 
+    public void updateName(String name) {
+        requireNonNull(name);
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
