@@ -30,6 +30,8 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID>, JpaSp
         + "where a.country = ?1 group by a.city", nativeQuery = true)
     List<CityCount> countByCity(String country);
 
+    Person findByPesel(String pesel);
+
     interface CityCount {
         String getCity();
         int getCount();
