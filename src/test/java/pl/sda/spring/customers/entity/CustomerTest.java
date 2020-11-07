@@ -220,6 +220,47 @@ class CustomerTest {
         assertEquals("PL", row2.getCountry());
     }
 
+    @Test
+    @Transactional
+    void testUpdatePersonName() {
+        // given
+        final var person = new Person("Jan", "Kowalski", "93994302002");
+        final var person2 = new Person("Adam", "Nowak", "8329292929");
+        saveAndClear(person, person2);
+
+        // when
+        final var updated = repository.updatePersonName(person.getId(), "Jan", "Kowalsky");
+
+        // then
+        assertEquals(1, updated);
+        final var readPerson = repository.findPersonById(person.getId());
+        assertEquals("Kowalsky", readPerson.getLastName());
+        assertEquals("Jan", readPerson.getFirstName());
+    }
+
+    @Test
+    @Transactional
+    void testUpdateAddress() {
+        // given
+        final var person = new Person("Jan", "Kowalski", "93994302002");
+        person.addAddress(new Address("str1", "cit", "01-200", "PL"));
+        saveAndClear(person);
+
+        // when
+        person.removeAddress(person.getAddresses().get(0));
+        saveAndClear(person);
+
+        final var address = new Address("str2", "cit", "01-200", "PL");
+        person.addAddress(address);
+        saveAndClear(person);
+
+        // then
+        final var readPerson = repository.findPersonById(person.getId());
+        final var size = readPerson.getAddresses().size();
+        assertEquals(1, size);
+        assertEquals(address, readPerson.getAddresses().get(size - 1));
+    }
+
     private void saveAndClear(Customer... args) {
         for (Customer customer : args) {
             repository.saveAndFlush(customer);
