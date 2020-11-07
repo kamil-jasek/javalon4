@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static pl.sda.spring.customers.entity.CustomerSpec.withQuery;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sda.spring.customers.entity.CustomerRepository.StreetByZipCodeCountry;
+import pl.sda.spring.customers.entity.CustomerSpec.CompanyQuery;
 
 @SpringBootTest
 class CustomerTest {
@@ -259,6 +261,36 @@ class CustomerTest {
         final var size = readPerson.getAddresses().size();
         assertEquals(1, size);
         assertEquals(address, readPerson.getAddresses().get(size - 1));
+    }
+
+    @Test
+    @Transactional
+    void testSpecification() {
+        // given
+        final var customer1 = new Company("TESY S.A.", "PL9393939");
+        final var customer2 = new Company("TEST 2", "PL39933020");
+        final var customer3 = new Company("TEST 3", "PL39933021");
+        saveAndClear(customer1, customer2, customer3);
+
+        // when: 1=1
+        var results = repository.findAll(withQuery(new CompanyQuery(null, null)));
+        // then:
+        assertEquals(3, results.size());
+
+        // when: 1=1 and name like :name
+        results = repository.findAll(withQuery(new CompanyQuery("TEST", null)));
+        // then
+        assertEquals(2, results.size());
+
+        // when 1=1 and vatNumber like :vatId
+        results = repository.findAll(withQuery(new CompanyQuery(null, "PL399")));
+        // then
+        assertEquals(2, results.size());
+
+        // when 1=1 and name like :name and vatNumber like :vatId
+        results = repository.findAll(withQuery(new CompanyQuery("TES", "PL93")));
+        // then
+        assertEquals(1, results.size());
     }
 
     private void saveAndClear(Customer... args) {
