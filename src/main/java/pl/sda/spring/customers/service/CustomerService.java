@@ -3,10 +3,13 @@ package pl.sda.spring.customers.service;
 import java.util.Collections;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.sda.spring.customers.dto.AddAddressDto;
+import pl.sda.spring.customers.dto.AddressDto;
 import pl.sda.spring.customers.dto.CompanyDto;
 import pl.sda.spring.customers.dto.CreateCompanyDto;
 import pl.sda.spring.customers.dto.CreatePersonDto;
 import pl.sda.spring.customers.dto.PersonDto;
+import pl.sda.spring.customers.entity.Address;
 import pl.sda.spring.customers.entity.CustomerRepository;
 import pl.sda.spring.customers.entity.Person;
 
@@ -35,6 +38,22 @@ public class CustomerService {
 
     @Transactional
     CompanyDto createCustomer(CreateCompanyDto dto) {
+        // TODO - implement
         return null;
+    }
+
+    @Transactional
+    AddressDto addAddress(AddAddressDto dto) {
+        final var customer = repository.getOne(dto.getCustomerId());
+        final var address = new Address(dto.getStreet(),
+            dto.getCity(),
+            dto.getZipCode(),
+            dto.getCountry());
+        customer.addAddress(address);
+        return new AddressDto(address.getId(),
+            address.getStreet(),
+            address.getCity(),
+            address.getZipCode(),
+            address.getCountry());
     }
 }

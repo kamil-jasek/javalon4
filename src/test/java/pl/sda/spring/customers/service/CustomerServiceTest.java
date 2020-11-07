@@ -6,19 +6,31 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Collections;
+import javax.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import pl.sda.spring.customers.dto.AddAddressDto;
+import pl.sda.spring.customers.dto.AddressDto;
 import pl.sda.spring.customers.dto.CreatePersonDto;
 import pl.sda.spring.customers.dto.PersonDto;
+import pl.sda.spring.customers.entity.Customer;
+import pl.sda.spring.customers.entity.CustomerRepository;
+import pl.sda.spring.customers.entity.Person;
 
 @SpringBootTest
 class CustomerServiceTest {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private CustomerRepository repository;
+
+    @Autowired
+    private EntityManager em;
 
     @Test
     @Transactional
@@ -43,9 +55,35 @@ class CustomerServiceTest {
     void testShouldFailWhenPeselExists() {
         // given
         final var createDto = new CreatePersonDto("Jan", "Nowak", "8392929929");
-        customerService.createCustomer(createDto);
+        saveAndClear(new Person("Jan", "Nowak", "8392929929"));
 
         // when
         assertThrows(IllegalArgumentException.class, () -> customerService.createCustomer(createDto));
+    }
+
+    @Test
+    @Transactional
+    void testAddAddress() {
+        // given
+        final var person = new Person("Jan", "Nowak", "8392929929");
+        saveAndClear(person);
+
+        // when
+        final var addressDto = customerService
+            .addAddress(new AddAddressDto(person.getId(), "str", "city", "01-300", "PL"));
+
+        // then
+        assertNotNull(addressDto.getId());
+        assertEquals("str", addressDto.getStreet());
+        assertEquals("city", addressDto.getCity());
+        assertEquals("01-300", addressDto.getZipCode());
+        assertEquals("PL", addressDto.getCountry());
+    }
+
+    private void saveAndClear(Customer... args) {
+        for (Customer customer : args) {
+            repository.saveAndFlush(customer);
+        }
+        em.clear();
     }
 }
