@@ -1,6 +1,7 @@
 package pl.sda.spring.customers.service;
 
 import java.util.Collections;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sda.spring.customers.dto.AddAddressDto;
@@ -17,9 +18,12 @@ import pl.sda.spring.customers.entity.Person;
 public class CustomerService {
 
     private final CustomerRepository repository;
+    private final GeocodingService geocodingService;
 
-    public CustomerService(CustomerRepository repository) {
+    public CustomerService(CustomerRepository repository,
+        GeocodingService geocodingService) {
         this.repository = repository;
+        this.geocodingService = geocodingService;
     }
 
     @Transactional
