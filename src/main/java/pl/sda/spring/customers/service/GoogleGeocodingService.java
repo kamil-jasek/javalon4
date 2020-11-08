@@ -19,17 +19,17 @@ import pl.sda.spring.customers.entity.Address;
 final class GoogleGeocodingService implements GeocodingService {
 
     private final GeoApiContext context;
+    private final GoogleGeocodingReverseProxy reverseProxy;
 
-    GoogleGeocodingService(GeoApiContext context) {
+    GoogleGeocodingService(GeoApiContext context, GoogleGeocodingReverseProxy reverseProxy) {
         this.context = context;
+        this.reverseProxy = reverseProxy;
     }
 
     @Override
     public Address reverse(double latitude, double longitude) {
         try {
-            final var results = GeocodingApi
-                .reverseGeocode(context, new LatLng(latitude, longitude))
-                .await();
+            final var results = reverseProxy.reverse(context, new LatLng(latitude, longitude));
 
             if (results.length == 0) {
                 return null;
