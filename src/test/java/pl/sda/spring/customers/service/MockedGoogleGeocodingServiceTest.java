@@ -1,18 +1,19 @@
 package pl.sda.spring.customers.service;
 
-import static com.google.maps.model.AddressComponentType.*;
+import static com.google.maps.model.AddressComponentType.COUNTRY;
+import static com.google.maps.model.AddressComponentType.LOCALITY;
+import static com.google.maps.model.AddressComponentType.POSTAL_CODE;
+import static com.google.maps.model.AddressComponentType.ROUTE;
+import static com.google.maps.model.AddressComponentType.STREET_NUMBER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
-import com.google.maps.errors.ApiException;
 import com.google.maps.model.AddressComponent;
 import com.google.maps.model.AddressComponentType;
 import com.google.maps.model.GeocodingResult;
-import java.io.IOException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;

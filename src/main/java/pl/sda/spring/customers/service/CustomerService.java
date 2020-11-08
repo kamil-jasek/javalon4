@@ -1,10 +1,10 @@
 package pl.sda.spring.customers.service;
 
 import java.util.Collections;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sda.spring.customers.dto.AddAddressDto;
+import pl.sda.spring.customers.dto.AddAddressFromCoordinatesDto;
 import pl.sda.spring.customers.dto.AddressDto;
 import pl.sda.spring.customers.dto.CompanyDto;
 import pl.sda.spring.customers.dto.CreateCompanyDto;
@@ -19,11 +19,13 @@ public class CustomerService {
 
     private final CustomerRepository repository;
     private final GeocodingService geocodingService;
+    private final Mapper mapper;
 
-    public CustomerService(CustomerRepository repository,
-        GeocodingService geocodingService) {
+    public CustomerService(CustomerRepository repository, GeocodingService geocodingService,
+        Mapper mapper) {
         this.repository = repository;
         this.geocodingService = geocodingService;
+        this.mapper = mapper;
     }
 
     @Transactional
@@ -33,11 +35,7 @@ public class CustomerService {
             throw new IllegalArgumentException("Person with PESEL: " + dto.getPesel() + " already exists.");
         }
         final var newPerson = repository.save(new Person(dto.getFirstName(), dto.getLastName(), dto.getPesel()));
-        return new PersonDto(newPerson.getId(),
-            Collections.emptyList(),
-            newPerson.getFirstName(),
-            newPerson.getLastName(),
-            newPerson.getPesel());
+        return mapper.mapToDto(newPerson);
     }
 
     @Transactional
@@ -54,10 +52,14 @@ public class CustomerService {
             dto.getZipCode(),
             dto.getCountry());
         customer.addAddress(address);
-        return new AddressDto(address.getId(),
-            address.getStreet(),
-            address.getCity(),
-            address.getZipCode(),
-            address.getCountry());
+        return mapper.mapToDto(address);
+    }
+
+    @Transactional
+    AddressDto addAddress(AddAddressFromCoordinatesDto dto) {
+        final var customer = repository.getOne(dto.getCustomerId());
+        final var address = geocodingService.reverse(dto.getLatitude(), dto.getLongitude());
+        customer.addAddress(address);
+        return mapper.mapToDto(address);
     }
 }

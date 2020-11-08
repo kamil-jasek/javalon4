@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sda.spring.customers.dto.AddAddressDto;
+import pl.sda.spring.customers.dto.AddAddressFromCoordinatesDto;
 import pl.sda.spring.customers.dto.AddressDto;
 import pl.sda.spring.customers.dto.CreatePersonDto;
 import pl.sda.spring.customers.dto.PersonDto;
@@ -78,6 +79,26 @@ class CustomerServiceTest {
         assertEquals("city", addressDto.getCity());
         assertEquals("01-300", addressDto.getZipCode());
         assertEquals("PL", addressDto.getCountry());
+    }
+
+    @Test
+    @Transactional
+    void testAddAddressFromCoordinates() {
+        // given
+        final var person = new Person("Jan", "Nowak", "8392929929");
+        saveAndClear(person);
+
+        // when
+        final var address = customerService.addAddress(
+            new AddAddressFromCoordinatesDto(person.getId(), 52.257502, 21.102816));
+
+        // then
+        assertNotNull(address);
+        assertNotNull(address.getId());
+        assertEquals("Dudziarska 4/2", address.getStreet());
+        assertEquals("Warszawa", address.getCity());
+        assertEquals("04-317", address.getZipCode());
+        assertEquals("PL", address.getCountry());
     }
 
     private void saveAndClear(Customer... args) {
