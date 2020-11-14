@@ -3,11 +3,22 @@ package pl.sda.spring.customers.dto;
 import static pl.sda.spring.customers.util.Precondition.requireNonNull;
 
 import java.util.Objects;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public final class CreatePersonDto extends CreateCustomerDto {
 
+    @NotNull
+    @NotBlank
     private final String firstName;
+
+    @NotNull
+    @NotBlank
     private final String lastName;
+
+    @NotNull
+    @Pattern(regexp = "\\d{11}")
     private final String pesel;
 
     public CreatePersonDto(String firstName, String lastName, String pesel) {
