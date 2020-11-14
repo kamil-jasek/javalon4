@@ -41,7 +41,10 @@ class CustomerControllerTest {
         mockMvc.perform(get("/api/v1/customers"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.length()", equalTo(1)))
+            .andExpect(jsonPath("$[0].id", equalTo(person.getId().toString())))
             .andExpect(jsonPath("$[0].lastName", equalTo("Nowak")))
+            .andExpect(jsonPath("$[0].firstName", equalTo("Jan")))
+            .andExpect(jsonPath("$[0].pesel", equalTo("8392929929")))
             .andDo(print());
     }
 

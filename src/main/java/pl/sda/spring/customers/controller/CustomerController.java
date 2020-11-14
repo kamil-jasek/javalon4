@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.sda.spring.customers.dto.CreateCompanyDto;
 import pl.sda.spring.customers.dto.CreateCustomerDto;
+import pl.sda.spring.customers.dto.CreatePersonDto;
 import pl.sda.spring.customers.dto.CustomerDto;
 import pl.sda.spring.customers.dto.PatchCustomerNameDto;
 import pl.sda.spring.customers.dto.UpdateCustomerDto;
@@ -43,7 +45,12 @@ final class CustomerController {
     // { ??? }
     @PostMapping
     CustomerDto createCustomer(@RequestBody CreateCustomerDto dto) {
-        return null;
+        if (dto instanceof CreateCompanyDto) {
+            return customerService.createCustomer((CreateCompanyDto) dto);
+        } else if (dto instanceof CreatePersonDto) {
+            return customerService.createCustomer((CreatePersonDto) dto);
+        }
+        throw new IllegalArgumentException("Invalid customer type: " + dto);
     }
 
     // PUT -> /api/v1/customers/9235ba6f-10b8-4a5e-8f81-f47f3722cbdf

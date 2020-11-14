@@ -4,12 +4,13 @@ import static pl.sda.spring.customers.util.Precondition.requireNonNull;
 
 import java.util.Objects;
 
-public final class CreateCompanyDto {
+public final class CreateCompanyDto extends CreateCustomerDto {
 
     private final String name;
     private final String vatNumber;
 
     public CreateCompanyDto(String name, String vatNumber) {
+        super(Type.COMPANY);
         requireNonNull(name, vatNumber);
         this.name = name;
         this.vatNumber = vatNumber;
