@@ -2,6 +2,7 @@ package pl.sda.spring.customers.dto;
 
 import static pl.sda.spring.customers.util.Precondition.requireNonNull;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Objects;
 import java.util.UUID;
 
