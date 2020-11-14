@@ -6,6 +6,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,7 +29,8 @@ import pl.sda.spring.customers.service.CustomerService;
 
 @RestController
 @RequestMapping("/api/v1/customers")
-final class CustomerController {
+@PreAuthorize("hasRole('CUSTOMERS_READ')")
+class CustomerController {
 
     private final CustomerService customerService;
 
@@ -53,6 +55,7 @@ final class CustomerController {
     }
 
     // POST -> /api/v1/customers/75977120-0c75-469c-83e8-d21e5f895167/addresses
+    @PreAuthorize("hasRole('CUSTOMERS_WRITE')")
     @PostMapping("/{id}/addresses")
     ResponseEntity<AddressDto> addAddress(@PathVariable UUID customerId, @RequestBody AddAddressDto dto) {
         // TODO
@@ -60,6 +63,7 @@ final class CustomerController {
     }
 
     // POST -> /api/v1/customers
+    @PreAuthorize("hasRole('CUSTOMERS_WRITE')")
     @PostMapping
     ResponseEntity<CustomerDto> createCustomer(@Valid @RequestBody CreateCustomerDto dto) {
         if (dto instanceof CreateCompanyDto) {
@@ -81,6 +85,7 @@ final class CustomerController {
 //    }
 
     // PATCH -> /api/v1/customers/aec14bde-e281-43c3-9e8f-8aafa19ca818/name
+    @PreAuthorize("hasRole('CUSTOMERS_WRITE')")
     @PatchMapping("/{id}/name")
     CustomerDto patchName(@RequestBody PatchCustomerNameDto dto) {
         // TODO
@@ -88,6 +93,7 @@ final class CustomerController {
     }
 
     // PATCH -> /api/v1/customers/aec14bde-e281-43c3-9e8f-8aafa19ca818/name
+    @PreAuthorize("hasRole('CUSTOMERS_WRITE')")
     @PatchMapping("/{id}/pesel")
     CustomerDto patchPesel(@RequestBody PatchPersonPeselDto dto) {
         // TODO
@@ -95,6 +101,7 @@ final class CustomerController {
     }
 
     // DELETE -> /api/v1/customers/78aa2e4b-4ed0-4041-b99a-97464e40eb4b
+    @PreAuthorize("hasRole('CUSTOMERS_WRITE')")
     @DeleteMapping("/{id}")
     CustomerDto deleteCustomer(@PathVariable UUID id) {
         // TODO

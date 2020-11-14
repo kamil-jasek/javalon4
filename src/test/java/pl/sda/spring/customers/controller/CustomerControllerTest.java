@@ -2,22 +2,20 @@ package pl.sda.spring.customers.controller;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javax.persistence.EntityManager;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultHandler;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sda.spring.customers.entity.Customer;
 import pl.sda.spring.customers.entity.Person;
@@ -40,7 +38,8 @@ class CustomerControllerTest {
         saveAndClear(person);
 
         // when
-        mockMvc.perform(get("/api/v1/customers"))
+        mockMvc.perform(get("/api/v1/customers")
+            .header(HttpHeaders.AUTHORIZATION, "Basic dXNlcjI6dGVzdDEyMw=="))
         // then
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.length()", equalTo(1)))
@@ -65,7 +64,8 @@ class CustomerControllerTest {
         // when
         mockMvc.perform(post("/api/v1/customers")
             .content(jsonRequest)
-            .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.AUTHORIZATION, "Basic dXNlcjI6dGVzdDEyMw=="))
         // then
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id", notNullValue()))
