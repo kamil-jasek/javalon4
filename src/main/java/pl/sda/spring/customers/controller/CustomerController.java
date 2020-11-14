@@ -2,6 +2,7 @@ package pl.sda.spring.customers.controller;
 
 import java.util.List;
 import java.util.UUID;
+import javax.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,8 +40,12 @@ final class CustomerController {
 
     // GET -> /api/v1/customers/75977120-0c75-469c-83e8-d21e5f895167
     @GetMapping("/{id}")
-    CustomerDto getCustomer(@PathVariable UUID id) {
-        return null;
+    ResponseEntity<CustomerDto> getCustomer(@PathVariable UUID id) {
+        try {
+            return ResponseEntity.ok(customerService.getCustomer(id));
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // POST -> /api/v1/customers

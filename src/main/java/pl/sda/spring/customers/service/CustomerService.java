@@ -2,7 +2,9 @@ package pl.sda.spring.customers.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sda.spring.customers.dto.AddAddressDto;
@@ -72,5 +74,10 @@ public class CustomerService {
         final var address = geocodingService.reverse(dto.getLatitude(), dto.getLongitude());
         customer.addAddress(address);
         return mapper.mapToDto(address);
+    }
+
+    public CustomerDto getCustomer(UUID id) {
+        final var customer = repository.getOne(id);
+        return mapper.mapToDto(Hibernate.unproxy(customer, Customer.class));
     }
 }
